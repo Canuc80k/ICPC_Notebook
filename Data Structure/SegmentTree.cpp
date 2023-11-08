@@ -1,0 +1,37 @@
+struct STN {ll val;};
+struct SegmentTree {
+    vector<STN> node;
+    const STN DEADNODE = {(ll)1e18};
+    ll uu, vv;
+    SegmentTree(ll n, ll uu, ll vv): node(4 * n + 10), uu(uu), vv(vv) {
+        fill(all(node), DEADNODE);
+    };
+    
+    STN merge(STN a, STN b) {return {min(a.val, b.val)};}
+
+    void update(ll pos, ll val) {update(pos, val, 1, uu, vv);}
+    void update(ll pos, ll val, ll id, ll l, ll r) {
+        if (l > pos || r < pos) return;
+        if (l == r) {
+            node[id].val = val;
+            return;
+        }
+        ll mid = (l + r) >> 1;
+        update(pos, val, id << 1, l, mid);
+        update(pos, val, id << 1 | 1, mid + 1, r);
+        node[id] = merge(node[id << 1], node[id << 1 | 1]);
+    }
+
+    STN get(ll u, ll v) {return get(u, v, 1, uu, vv);}
+    STN get(ll u, ll v, ll id, ll l, ll r) {
+        if (l > v || r < u) return DEADNODE;
+        if (u <= l && r <= v) return node[id];
+        ll mid = (l + r) >> 1;
+        return merge(get(u, v, id << 1, l, mid), get(u, v, id << 1 | 1, mid + 1, r));
+    }
+};
+
+/*
+    [Problem] https://cses.fi/problemset/task/1649/ 
+    [Code] https://paste.ubuntu.com/p/BrxNRqvTmR/
+*/

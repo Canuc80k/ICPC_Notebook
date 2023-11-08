@@ -1,8 +1,8 @@
 struct FenwickTree {
 	vector<ll> node;
-	FenwickTree(ll n) : node(n + 2, 0) {}
-	void update(ll pos, ll dif) {
-		for (; pos < node.size(); pos += pos & (-pos)) node[pos] += dif;
+	FenwickTree(ll n) : node(n + 10, 0) {}
+	void update(ll pos, ll val) {
+		for (; pos < node.size(); pos += pos & (-pos)) node[pos] += val;
 	}
 	ll get(ll pos) { 
         ll res = 0; 

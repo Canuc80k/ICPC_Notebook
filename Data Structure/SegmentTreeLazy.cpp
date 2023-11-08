@@ -1,0 +1,50 @@
+struct STN {ll val, lazy;};
+struct SegmentTree {
+    vector<STN> node;
+    const STN DEADNODE = {(ll)0, (ll)0};
+    ll uu, vv;
+    SegmentTree(ll n, ll uu, ll vv): node(4 * n + 10), uu(uu), vv(vv) {
+        fill(all(node), DEADNODE);
+    };
+    
+    STN merge(STN a, STN b) {return {a.val + b.val};}
+
+    void down(ll id, ll l, ll r) {
+        if (node[id].lazy == 0) return;
+        ll tmp = node[id].lazy;
+        node[id].lazy = 0;
+        node[id << 1].lazy += tmp;
+        node[id << 1 | 1].lazy += tmp;
+        node[id << 1].val += tmp;
+        node[id << 1 | 1].val += tmp;
+    }
+
+    void update(ll u, ll v, ll val) {update(u, v, val, 1, uu, vv);}
+    void update(ll u, ll v, ll val, ll id, ll l, ll r) {
+        if (l > v || r < u) return;
+        if (u <= l && r <= v) {
+            node[id].val += val;
+            node[id].lazy += val;
+            return;
+        }
+        down(id, l, r);
+        ll mid = (l + r) >> 1;
+        update(u, v, val, id << 1, l, mid);
+        update(u, v, val, id << 1 | 1, mid + 1, r);
+        node[id] = merge(node[id << 1], node[id << 1 | 1]);
+    }
+
+    STN get(ll u, ll v) {return get(u, v, 1, uu, vv);}
+    STN get(ll u, ll v, ll id, ll l, ll r) {
+        if (l > v || r < u) return DEADNODE;
+        if (u <= l && r <= v) return node[id];
+        down(id, l, r);
+        ll mid = (l + r) >> 1;
+        return merge(get(u, v, id << 1, l, mid), get(u, v, id << 1 | 1, mid + 1, r));
+    }
+};
+
+/*
+    [Problem]: https://cses.fi/problemset/task/1651/
+    [Code]: https://paste.ubuntu.com/p/bf3JJzzJKs/
+*/
