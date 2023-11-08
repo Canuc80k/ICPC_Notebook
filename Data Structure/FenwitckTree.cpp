@@ -10,3 +10,8 @@ struct FenwickTree {
         return res; 
 	}
 };
+
+/*
+    [Problem]: https://cses.fi/problemset/task/1648 
+    [Code]: https://paste.ubuntu.com/p/dXMqwkDrTQ/  
+*/
