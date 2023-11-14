@@ -16,3 +16,8 @@ struct SparseTable {
         return merge(table[l][k], table[r - (1 << k) + 1][k]);    
     }
 };
+
+/*
+    [Problem]: https://judge.yosupo.jp/problem/staticrmq
+    [Code]: https://paste.ubuntu.com/p/ywZNmH3zZZ/
+*/
