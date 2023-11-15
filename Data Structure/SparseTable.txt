@@ -3,7 +3,6 @@ struct SparseTable {
     ll merge(ll a, ll b) {return min(a, b);}
     void buildTable(ll *a, ll n) {
         table.resize(n + 1, vector<ll>(__lg(n + 1) + 1, 0));
-
         FOR (i, 1, n) table[i][0] = a[i];
         FOR (j, 1, __lg(n))
             for (ll i = 1; i + (1 << j) - 1 <= n; i ++)
@@ -17,5 +16,5 @@ struct SparseTable {
 
 /*
     [Problem]: https://judge.yosupo.jp/problem/staticrmq
-    [Code]: https://paste.ubuntu.com/p/ywZNmH3zZZ/
+    [Code]: https://paste.ubuntu.com/p/MfNC9Gjj3s/
 */

@@ -1,0 +1,23 @@
+struct RMQSparseTable {
+    vector<ll> a;
+    vector<vector<ll> > mi, ma; 
+    void buildTable(ll *arr, ll n) {
+        a.resize(n + 1);
+        mi.resize(n + 1, vector<ll>(__lg(n + 1) + 1, 0));
+        ma.resize(n + 1, vector<ll>(__lg(n + 1) + 1, 0));
+        FOR (i, 1, n) a[i] = arr[i], mi[i][0] = ma[i][0] = i;
+        FOR (j, 1, lg(n))
+            for (ll i = 1; i + (1 << j) - 1 <= n; i ++)
+                mi[i][j] = (a[mi[i][j - 1]] <= a[mi[i + (1 << (j - 1))][j - 1]]) ? (mi[i][j - 1]) : (mi[i + (1 << (j - 1))][j - 1]),
+                ma[i][j] = (a[ma[i][j - 1]] >= a[ma[i + (1 << (j - 1))][j - 1]]) ? (ma[i][j - 1]) : (ma[i + (1 << (j - 1))][j - 1]);
+    }
+    ll getMaxIndex(ll l, ll r) {ll k = lg(r - l + 1); return (a[ma[l][k]] >= a[ma[r - (1 << k) + 1][k]]) ? ma[l][k] : ma[r - (1 << k) + 1][k];}
+    ll getMax(ll l, ll r) {return a[getMaxIndex(l, r)];}
+    ll getMinIndex(ll l, ll r) {ll k = lg(r - l + 1); return (a[mi[l][k]] <= a[mi[r - (1 << k) + 1][k]]) ? mi[l][k] : mi[r - (1 << k) + 1][k];}
+    ll getMin(ll l, ll r) {return a[getMinIndex(l, r)];}
+};
+
+/*
+    [Problem]:https://judge.yosupo.jp/problem/staticrmq
+    [Code]: https://paste.ubuntu.com/p/8T73Xbx7FZ/
+*/
