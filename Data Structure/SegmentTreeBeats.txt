@@ -1,0 +1,167 @@
+struct STBN {
+    ll sum, max1, max2, maxc, min1, min2, minc, lazy;
+};
+struct SegmentTreeBeats {
+    ll n;
+    vector<STBN> st;
+    const STBN DEADNODE = {0, -INF, -INF, 0, INF, INF, 0, 0};
+
+    void init(ll n) {
+        this->n = n;
+        st.resize(n * 4 + 1, DEADNODE);
+    }
+    void merge(ll id) {
+        st[id].sum = st[id << 1].sum + st[id << 1 | 1].sum;
+
+        if (st[id << 1].max1 == st[id << 1 | 1].max1) {
+            st[id].max1 = st[id << 1].max1;
+            st[id].max2 = max(st[id << 1].max2, st[id << 1 | 1].max2);
+            st[id].maxc = st[id << 1].maxc + st[id << 1 | 1].maxc;
+        } else {
+            if (st[id << 1].max1 > st[id << 1 | 1].max1) {
+                st[id].max1 = st[id << 1].max1;
+                st[id].max2 = max(st[id << 1].max2, st[id << 1 | 1].max1);
+                st[id].maxc = st[id << 1].maxc;
+            } else {
+                st[id].max1 = st[id << 1 | 1].max1;
+                st[id].max2 = max(st[id << 1].max1, st[id << 1 | 1].max2);
+                st[id].maxc = st[id << 1 | 1].maxc;
+            }
+        }
+
+        if (st[id << 1].min1 == st[id << 1 | 1].min1) {
+            st[id].min1 = st[id << 1].min1;
+            st[id].min2 = min(st[id << 1].min2, st[id << 1 | 1].min2);
+            st[id].minc = st[id << 1].minc + st[id << 1 | 1].minc;
+        } else {
+            if (st[id << 1].min1 < st[id << 1 | 1].min1) {
+                st[id].min1 = st[id << 1].min1;
+                st[id].min2 = min(st[id << 1].min2, st[id << 1 | 1].min1);
+                st[id].minc = st[id << 1].minc;
+            } else {
+                st[id].min1 = st[id << 1 | 1].min1;
+                st[id].min2 = min(st[id << 1].min1, st[id << 1 | 1].min2);
+                st[id].minc = st[id << 1 | 1].minc;
+            }
+        }
+    }
+    
+    void build(ll *a) {build(1, 1, n, a);}
+    void build(int id, int l, int r, ll *a) {
+        if (l == r) {
+            st[id] = {a[l], a[l], -INF, 1, a[l], INF, 1, 0};
+            return;
+        }
+        int mid = (l + r) >> 1;
+        build(id << 1, l, mid, a);
+        build(id << 1 | 1, mid + 1, r, a);
+        merge(id);
+    }
+
+    void push_add(int id, int l, int r, ll x) {
+        if (x == 0) return;
+        st[id].sum += x * (r - l + 1);
+        st[id].max1 += x;
+        st[id].min1 += x;
+        if (st[id].max2 != -INF) st[id].max2 += x;
+        if (st[id].min2 != INF) st[id].min2 += x;
+        st[id].lazy += x;
+    }
+    
+    void push_max(int id, int l, int r, ll x) {
+        if (st[id].min1 >= x) return; 
+        if (l == r) {
+            st[id].sum = st[id].min1 = st[id].max1 = x;
+            return;
+        }
+        st[id].sum += st[id].minc * (x - st[id].min1);
+        st[id].min1 = x;
+        if (x >= st[id].max1) st[id].max1 = x;
+        else if (x > st[id].max2) st[id].max2 = x;
+    }
+    
+    void push_min(int id, int l, int r, ll x) {
+        if (x >= st[id].max1) return;
+        if (l == r) {
+            st[id].sum = st[id].min1 = st[id].max1 = x;
+            return;
+        }
+        st[id].sum += st[id].maxc * (x - st[id].max1);
+        st[id].max1 = x;
+        if (x <= st[id].min1) st[id].min1 = x;
+        else if (x < st[id].min2) st[id].min2 = x;
+    }
+    
+    void down(int id, int l, int r) {
+        if (l == r) return;
+        int mid = (l + r) >> 1;
+
+        push_add(id << 1, l, mid, st[id].lazy);
+        push_add(id << 1 | 1, mid + 1, r, st[id].lazy);
+        st[id].lazy = 0;
+
+        push_max(id << 1, l, mid, st[id].min1);
+        push_max(id << 1 | 1, mid + 1, r, st[id].min1);
+
+        push_min(id << 1, l, mid, st[id].max1);
+        push_min(id << 1 | 1, mid + 1, r, st[id].max1);
+    }
+
+    void update_add(int u, int v, ll x) {update_add(1, 1, n, u, v, x);}
+    void update_add(int id, int l, int r, int u, int v, ll x) {
+        if (l > v || r < u) return;
+        if (u <= l && r <= v) {
+            push_add(id, l, r, x);
+            return;
+        }
+        down(id, l, r);
+        int mid = (l + r) >> 1;
+        update_add(id << 1, l, mid, u, v, x);
+        update_add(id << 1 | 1, mid + 1, r, u, v, x);
+        merge(id);
+    }
+
+    void update_max(int u, int v, ll x) {update_max(1, 1, n, u, v, x);}
+    void update_max(int id, int l, int r, int u, int v, ll x) {
+        if (l > v || r < u || x <= st[id].min1) return;
+        if (u <= l && r <= v && x < st[id].min2) {
+            push_max(id, l, r, x);
+            return;
+        }
+        down(id, l, r);
+        int mid = (l + r) >> 1;
+        update_max(id << 1, l, mid, u, v, x);
+        update_max(id << 1 | 1, mid + 1, r, u, v, x);
+        merge(id);
+    }
+
+    void update_min(int u, int v, ll x) {update_min(1, 1, n, u, v, x);}
+    void update_min(int id, int l, int r, int u, int v, ll x) {
+        if (l > v || r < u || x >= st[id].max1) return;
+        if (u <= l && r <= v && x > st[id].max2) {
+            push_min(id, l, r, x);
+            return;
+        }
+        down(id, l, r);
+
+        int mid = (l + r) >> 1;
+        update_min(id << 1, l, mid, u, v, x);
+        update_min(id << 1 | 1, mid + 1, r, u, v, x);
+        merge(id);
+    }
+    ll get(int u, int v) {return get(1, 1, n, u, v);}
+    ll get(int id, int l, int r, int u, int v) {
+        if (l > v || r < u) return 0;
+        if (u <= l && r <= v) return st[id].sum;
+        down(id, l, r);
+        int mid = (l + r) >> 1;
+        ll le = get(id << 1, l, mid, u, v);
+        ll ri = get(id << 1 | 1, mid + 1, r, u, v);
+        return le + ri;
+    }
+};
+
+/*
+    [Problem]: https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum
+    [Code]: https://paste.ubuntu.com/p/jWxXmSjRN8/
+*/
