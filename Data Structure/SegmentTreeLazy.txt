@@ -14,8 +14,8 @@ struct SegmentTree {
         ll tmp = node[id].lazy;
         node[id].lazy = 0;
         node[id << 1].lazy += tmp;
-        node[id << 1 | 1].lazy += tmp;
         node[id << 1].val += tmp;
+        node[id << 1 | 1].lazy += tmp;
         node[id << 1 | 1].val += tmp;
     }
 
