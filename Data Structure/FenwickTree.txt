@@ -1,6 +1,6 @@
 struct FenwickTree {
 	vector<ll> node;
-	FenwickTree(ll n) : node(n + 10, 0) {}
+    void init(ll n) {node.resize(n + 10, 0);}
 	void update(ll pos, ll val) {
 		for (; pos < node.size(); pos += pos & (-pos)) node[pos] += val;
 	}
@@ -13,5 +13,5 @@ struct FenwickTree {
 
 /*
     [Problem]: https://cses.fi/problemset/task/1648 
-    [Code]: https://paste.ubuntu.com/p/dXMqwkDrTQ/  
+    [Code]: https://paste.ubuntu.com/p/trnNp4hMvj/
 */

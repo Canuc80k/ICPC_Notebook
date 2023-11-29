@@ -3,8 +3,10 @@ struct SegmentTree {
     vector<STN> node;
     const STN DEADNODE = {(ll)0, (ll)0};
     ll uu, vv;
-    SegmentTree(ll n, ll uu, ll vv): node(4 * n + 10), uu(uu), vv(vv) {
-        fill(all(node), DEADNODE);
+    void init(ll n, ll uu, ll vv) {
+        node.resize(4 * n + 10, DEADNODE);
+        this->uu = uu;
+        this->vv = vv;
     };
     
     STN merge(STN a, STN b) {return {a.val + b.val};}
@@ -14,8 +16,8 @@ struct SegmentTree {
         ll tmp = node[id].lazy;
         node[id].lazy = 0;
         node[id << 1].lazy += tmp;
-        node[id << 1].val += tmp;
         node[id << 1 | 1].lazy += tmp;
+        node[id << 1].val += tmp;
         node[id << 1 | 1].val += tmp;
     }
 
@@ -46,5 +48,5 @@ struct SegmentTree {
 
 /*
     [Problem]: https://cses.fi/problemset/task/1651/
-    [Code]: https://paste.ubuntu.com/p/bf3JJzzJKs/
+    [Code]: https://paste.ubuntu.com/p/VsXyfFgwqG/
 */

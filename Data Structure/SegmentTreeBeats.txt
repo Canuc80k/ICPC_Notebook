@@ -2,13 +2,14 @@ struct STBN {
     ll sum, max1, max2, maxc, min1, min2, minc, lazy;
 };
 struct SegmentTreeBeats {
-    ll n;
     vector<STBN> st;
     const STBN DEADNODE = {0, -INF, -INF, 0, INF, INF, 0, 0};
+    ll uu, vv;
 
-    void init(ll n) {
-        this->n = n;
+    void init(ll n, ll uu, ll vv) {
         st.resize(n * 4 + 1, DEADNODE);
+        this->uu = uu;
+        this->vv = vv;
     }
     void merge(ll id) {
         st[id].sum = st[id << 1].sum + st[id << 1 | 1].sum;
@@ -46,7 +47,7 @@ struct SegmentTreeBeats {
         }
     }
     
-    void build(ll *a) {build(1, 1, n, a);}
+    void build(ll *a) {build(1, uu, vv, a);}
     void build(int id, int l, int r, ll *a) {
         if (l == r) {
             st[id] = {a[l], a[l], -INF, 1, a[l], INF, 1, 0};
@@ -107,7 +108,7 @@ struct SegmentTreeBeats {
         push_min(id << 1 | 1, mid + 1, r, st[id].max1);
     }
 
-    void update_add(int u, int v, ll x) {update_add(1, 1, n, u, v, x);}
+    void update_add(int u, int v, ll x) {update_add(1, uu, vv, u, v, x);}
     void update_add(int id, int l, int r, int u, int v, ll x) {
         if (l > v || r < u) return;
         if (u <= l && r <= v) {
@@ -121,7 +122,7 @@ struct SegmentTreeBeats {
         merge(id);
     }
 
-    void update_max(int u, int v, ll x) {update_max(1, 1, n, u, v, x);}
+    void update_max(int u, int v, ll x) {update_max(1, uu, vv, u, v, x);}
     void update_max(int id, int l, int r, int u, int v, ll x) {
         if (l > v || r < u || x <= st[id].min1) return;
         if (u <= l && r <= v && x < st[id].min2) {
@@ -135,7 +136,7 @@ struct SegmentTreeBeats {
         merge(id);
     }
 
-    void update_min(int u, int v, ll x) {update_min(1, 1, n, u, v, x);}
+    void update_min(int u, int v, ll x) {update_min(1, uu, vv, u, v, x);}
     void update_min(int id, int l, int r, int u, int v, ll x) {
         if (l > v || r < u || x >= st[id].max1) return;
         if (u <= l && r <= v && x > st[id].max2) {
@@ -143,13 +144,12 @@ struct SegmentTreeBeats {
             return;
         }
         down(id, l, r);
-
         int mid = (l + r) >> 1;
         update_min(id << 1, l, mid, u, v, x);
         update_min(id << 1 | 1, mid + 1, r, u, v, x);
         merge(id);
     }
-    ll get(int u, int v) {return get(1, 1, n, u, v);}
+    ll get(int u, int v) {return get(1, uu, vv, u, v);}
     ll get(int id, int l, int r, int u, int v) {
         if (l > v || r < u) return 0;
         if (u <= l && r <= v) return st[id].sum;
@@ -163,5 +163,5 @@ struct SegmentTreeBeats {
 
 /*
     [Problem]: https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum
-    [Code]: https://paste.ubuntu.com/p/jWxXmSjRN8/
+    [Code]: https://paste.ubuntu.com/p/88rSn2kqkQ/
 */

@@ -14,9 +14,7 @@ struct PSTN {
 
 struct PersistentSegmentTree {
     vector<PSTN*> roots;
-    void init(ll n) {
-        roots.resize(n + 10, 0);
-    }
+    void init(ll n) {roots.resize(n + 10, 0);}
     PSTN *build(ll l, ll r, ll *a) {
         if (l == r) return new PSTN(a[l]);
         ll mid = (l + r) >> 1;
