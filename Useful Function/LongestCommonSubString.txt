@@ -1,0 +1,15 @@
+ll lcs(string s, string t) {
+    vector<vi> f;
+    f.resize(s.sz + 1, vi(t.sz + 1, 0));
+    ll res = 0;
+    FOR (i, 1, s.sz)
+        FOR (j, 1, t.sz)
+            f[i][j] = max({f[i - 1][j], f[i][j - 1], f[i - 1][j - 1] + (s[i - 1] == t[j - 1])}),
+            res = max(res, f[i][j]);
+    return res;
+}
+
+/*
+    [Problem]: https://codeforces.com/problemset/problem/1906/L
+    [Code]: https://paste.ubuntu.com/p/t26PCzHJvD/
+*/

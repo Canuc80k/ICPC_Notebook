@@ -1,7 +1,6 @@
 struct PSTN {
 	ll val;
 	PSTN *l, *r;
-
 	PSTN(ll x) : val(x), l(nullptr), r(nullptr) {}
 	PSTN(PSTN *ll, PSTN *rr) {
 		l = ll, r = rr;
