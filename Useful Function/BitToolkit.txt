@@ -1,0 +1,4 @@
+bool getBit(ll mask, ll pos) {return mask & (1ULL << pos);}
+void turnOffBit(ll &mask, ll pos) {mask &= ~(1ULL << pos);}
+void turnOnBit(ll &mask, ll pos) {mask |= (1ULL << pos);}
+void flipBit(ll &mask, ll pos) {mask ^= (1ULL << pos);}

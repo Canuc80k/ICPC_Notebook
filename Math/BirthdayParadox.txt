@@ -1,0 +1,6 @@
+P(n , k) > 1 – e^((-k * (k - 1)) / 2n)
+
+/*
+    [Problem]: https://codeforces.com/contest/995/problem/E
+    [Code]: https://paste.ubuntu.com/p/Krz3qtbdgy/
+*/
