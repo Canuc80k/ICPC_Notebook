@@ -1,0 +1,23 @@
+pqmin<ii> pqd;
+vi dijkstra(ll st) {
+    vi res(n + 1, 0), vst(n + 1, 0);
+    FOR (i, 1, n) res[i] = INF;
+    pqd.push({res[st] = 0, st});
+    while (pqd.sz) {
+        auto [weight, node] = pqd.top(); pqd.pop();
+        if (vst[node]) continue; vst[node] = 1;
+        FORAA (x, w, adj[node]) {
+            if (vst[x]) continue;
+            if (weight + w < res[x]) {
+                res[x] = weight + w;
+                pqd.push({res[x], x});
+            }
+        }
+    }
+    return res;
+}
+
+/*
+    [Problem]: https://codeforces.com/problemset/problem/20/C
+    [Code]: https://paste.ubuntu.com/p/dzfC7SqbJM/
+*/

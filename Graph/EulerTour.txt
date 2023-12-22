@@ -1,0 +1,13 @@
+ll eL[N], eR[N], eA[N], ptr = 0;
+void eulerTour(ll node) {
+    eA[++ ptr] = node;
+    eL[node] = ptr;
+    FORA (x, adj[node])
+        eulerTour(x);
+    eR[node] = ptr;
+}
+
+/*
+    [Code]: https://paste.ubuntu.com/p/mNQzFgncWZ/
+    [Problem]: https://codeforces.com/contest/1132/problem/G
+*/
