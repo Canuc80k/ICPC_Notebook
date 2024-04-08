@@ -1,7 +1,7 @@
-struct MSTN {oset<ii> a;};
+struct MSTN {oset<pair<ll, ll>> a;};
 struct MergeSortTree {
     vector<MSTN> node;
-    const MSTN DEADNODE = {oset<ii>()};
+    const MSTN DEADNODE = {oset<pair<ll, ll>>()};
     ll uu, vv;
     void init(ll n, ll uu, ll vv) {
         node.resize(n * 4, DEADNODE);
@@ -17,12 +17,12 @@ struct MergeSortTree {
         ll mid = (l + r) >> 1;
         build(n, a, id << 1, l, mid);
         build(n, a, id << 1 | 1, mid + 1, r);
-        FORA (x, node[id << 1].a) node[id].a.insert(x);
-        FORA (x, node[id << 1 | 1].a) node[id].a.insert(x);
+        for (auto x: node[id << 1].a) node[id].a.insert(x);
+        for (auto x: node[id << 1 | 1].a) node[id].a.insert(x);
     }
 
-    void update(ll pos, ii oldValue, ii newValue) {update(pos, oldValue, newValue, 1, uu, vv);}
-    void update(ll pos, ii oldValue, ii newValue, ll id, ll l, ll r) {
+    void update(ll pos, pair<ll, ll> oldValue, pair<ll, ll> newValue) {update(pos, oldValue, newValue, 1, uu, vv);}
+    void update(ll pos, pair<ll, ll> oldValue, pair<ll, ll> newValue, ll id, ll l, ll r) {
         if (pos < l || pos > r) return;
         if (l == r) {
             node[id].a.erase(oldValue);
@@ -47,5 +47,6 @@ struct MergeSortTree {
 
 /*
     [Problem]: https://www.spoj.com/problems/MKTHNUM/
-    [Code]: https://paste.ubuntu.com/p/3J4VMtqbxQ/
+    [Code]: https://paste.ubuntu.com/p/3Bk5CDgkkQ/
+    [Double Check]: 08/04/2024
 */

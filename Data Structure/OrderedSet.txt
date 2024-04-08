@@ -1,0 +1,10 @@
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template<typename T> using oset = tree<T, null_type,less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+/*
+    [Problem]: https://www.spoj.com/ranks/MKTHNUM/
+    [Code]: https://paste.ubuntu.com/p/3Bk5CDgkkQ/
+    [Double Check]: 08/04/2024
+*/
