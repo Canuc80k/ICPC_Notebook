@@ -1,0 +1,12 @@
+struct Dsu {
+    vector<ll> s;
+    Dsu(ll n): s(n + 1, -1) {}
+    ll find(ll a) {return s[a] < 0 ? a : (s[a] = find(s[a]));}
+    void merge(ll a, ll b) {
+        a = find(a), b = find(b);
+        if (a == b) return;
+        if (s[a] > s[b]) swap(a, b);
+        s[a] += s[b];
+        s[b] = a;
+    }
+};

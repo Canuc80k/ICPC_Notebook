@@ -1,0 +1,18 @@
+struct Dsu {
+	vector<ll> s; vector<pair<ll, ll>> st;
+	Dsu(ll n): s(n + 1, -1) {}
+    ll find(ll a) {return s[a] < 0 ? a : (s[a] = find(s[a]));}
+	void rollback(ll t) {
+		for (ll i = st.size(); i --> t;) 
+            s[st[i].first] = st[i].second;
+		st.resize(t);
+	}
+	void merge(ll a, ll b) {
+		a = find(a), b = find(b);
+		if (a == b) return;
+		if (s[a] > s[b]) swap(a, b);
+		st.push_back({a, s[a]});
+		st.push_back({b, s[b]});
+		s[a] += s[b]; s[b] = a;
+	}
+};

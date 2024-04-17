@@ -1,0 +1,27 @@
+template<class T, ll N> struct Matrix {
+	array<array<T, N>, N> s{};
+	Matrix operator*(Matrix& m) {
+		Matrix a;
+		for (int i = 0; i < N; i ++)
+            for (int j = 0; j < N; j ++)
+                for (int k = 0; k < N; k ++)
+			        a.s[i][j] += s[i][k] * m.s[k][j], a.s[i][j] %= M;
+		return a;
+	}
+	vector<T> operator*(vector<T>& v) {
+		vector<T> res(N);
+        for (int i = 0; i < N; i ++)
+            for (int j = 0; j < N; j ++)
+                res[i] += s[i][j] * v[j], res[i] %= M;
+        return res;
+	}
+	Matrix operator^(ll p) {
+		Matrix a, b(*this);
+		for (int i = 0; i < N; i ++) a.s[i][i] = 1;
+		while (p) {
+			if (p & 1) a = a * b;
+			b = b * b;
+			p >>= 1;
+		} return a;
+	}
+};
