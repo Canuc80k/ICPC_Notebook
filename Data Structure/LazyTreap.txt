@@ -1,12 +1,22 @@
 struct Treap {
     vector<ll> l, r;
     vector<ll> val, ma, cnt;
+    vector<ll> lazySum;
     ll sz, root;
 
-    Treap(): sz(1), root(0), l(1, 0), r(1, 0), cnt(1, 0), val(1, 0), ma(1, 0) {}
+    Treap(): sz(1), root(0), l(1, 0), r(1, 0), cnt(1, 0), val(1, 0), ma(1, 0), lazySum(1, 0) {}
 
     ll getCnt(ll node) {return node != 0 ? cnt[node] : 0;}
     ll getMax(ll node) {return node != 0 ? ma[node] : -1e18;}
+
+    void down(ll node) {
+        if (node == 0) return;
+        if (lazySum[node]) {
+            ll tmp = lazySum[node]; lazySum[node] = 0;
+            if (l[node] != 0) lazySum[l[node]] += tmp, val[l[node]] += tmp, ma[l[node]] += tmp;
+            if (r[node] != 0) lazySum[r[node]] += tmp, val[r[node]] += tmp, ma[r[node]] += tmp;
+        }
+    }
 
     void recal(ll node) {
         if (node == 0) return;
@@ -18,12 +28,14 @@ struct Treap {
         val.push_back(v); ma.push_back(v);
         l.push_back(left); r.push_back(right);
         cnt.push_back(1);
+        lazySum.push_back(0);
         recal(sz);
         return sz ++;
     }
 
     void split(ll node, ll &left, ll &right, ll cnt) {
         if (node == 0) {left = right = 0; return;}
+        down(node);
         ll tmp = getCnt(l[node]);
         if (tmp >= cnt) {
             split(l[node], left, l[node], cnt);
@@ -37,6 +49,7 @@ struct Treap {
 
     ll merge(ll left, ll right) {
         if (left == 0 || right == 0) return left == 0 ? right : left;
+        down(left); down(right);
         if (rand(1, 1e18) % (cnt[left] + cnt[right]) < cnt[left]) {
             r[left] = merge(r[left], right);
             recal(left);
@@ -54,12 +67,13 @@ struct Treap {
         root = merge(root, n2);
     }
 
-    void update(ll pos, ll v) {
+    void update(ll l, ll r, ll v) {
         ll n1, n2, n3;
-        split(root, n1, n2, pos);
-        split(n2, n2, n3, 1);
-        ma[n2] = v;
-        val[n2] = v;
+        split(root, n1, n2, l);
+        split(n2, n2, n3, r - l + 1);
+        lazySum[n2] += v;
+        val[n2] += v;
+        ma[n2] += v;
         root = merge(n1, n2);
         root = merge(root, n3);
     }
@@ -83,6 +97,7 @@ struct Treap {
 
     void print(ll node) {
         if (node == 0) return;
+        down(node);
         print(l[node]);
         cout << val[node] << ' ';
         print(r[node]);
