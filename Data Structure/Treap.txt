@@ -1,0 +1,87 @@
+struct Treap {
+    vector<ll> l, r;
+    vector<ll> val, ma, cnt;
+    ll sz, root;
+
+    Treap(): sz(1), root(0), l(1, 0), r(1, 0), cnt(1, 0), val(1, 0), ma(1, 0) {
+        insert(0, 0);
+    }
+
+    ll getCnt(ll node) {return node != 0 ? cnt[node] : 0;}
+    ll getMax(ll node) {return node != 0 ? ma[node] : -1e18;}
+
+    void recal(ll node) {
+        if (node == 0) return;
+        cnt[node] = getCnt(l[node]) + getCnt(r[node]) + 1;
+        ma[node] = max(max(getMax(l[node]), getMax(r[node])), val[node]);
+    }
+
+    ll newNode(ll v, ll left, ll right) {
+        val.push_back(v); ma.push_back(v);
+        l.push_back(left); r.push_back(right);
+        cnt.push_back(1);
+        recal(sz);
+        return sz ++;
+    }
+
+    void split(ll node, ll &left, ll &right, ll cnt) {
+        if (node == 0) {left = right = 0; return;}
+        ll tmp = getCnt(l[node]);
+        if (tmp >= cnt) {
+            split(l[node], left, l[node], cnt);
+            right = node;
+        } else {
+            split(r[node], r[node], right, cnt - tmp - 1);
+            left = node;
+        }
+        recal(node);
+    }
+
+    ll merge(ll left, ll right) {
+        if (left == 0 || right == 0) return left == 0 ? right : left;
+        if (rand(1, 1e18) % (cnt[left] + cnt[right]) < cnt[left]) {
+            r[left] = merge(r[left], right);
+            recal(left);
+            return left;
+        }
+        l[right] = merge(left, l[right]);
+        recal(right);
+        return right;
+    }
+
+    void insert(ll pos, ll val) {
+        if (pos > getCnt(root)) return;
+        ll n1, n2;
+        split(root, n1, n2, pos);
+        root = merge(n1, newNode(val, 0, 0));
+        root = merge(root, n2);
+    }
+
+    void update(ll pos, ll v) {
+        ll n1, n2, n3;
+        split(root, n1, n2, pos);
+        split(n2, n2, n3, 1);
+        ma[n2] = v;
+        val[n2] = v;
+        root = merge(n1, n2);
+        root = merge(root, n3);
+    }
+
+    void erase(ll pos) {
+        if (getCnt(root) <= pos) return;
+        ll n1, n2, n3;
+        split(root, n1, n2, pos);
+        split(n2, n2, n3, 1);
+        root = merge(n1, n3);
+    }
+
+    ll getMax(ll l, ll r) {
+        ll n1, n2, n3;
+        split(root, n1, n2, l);
+        split(n2, n2, n3, r - l + 1);
+        ll res = getMax(n2);
+        root = merge(n1, n2);
+        root = merge(root, n3);
+        return res;
+    }
+};
