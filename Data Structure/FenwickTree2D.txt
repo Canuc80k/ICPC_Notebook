@@ -1,0 +1,20 @@
+struct FenwickTree2D {
+    vector<vector<ll>> s; ll n, m;
+    FenwickTree2D(ll n, ll m): n(n), m(m), s(n + 10, vector<ll>(m + 10, 0)) {}
+
+    void update(ll u, ll v, ll x) {
+        for (int i = u; i <= n; i += i & (-i))
+            for (int j = v; j <= m; j += j & (-j)) s[i][j] += x;
+    }
+
+    ll get(ll u, ll v) {
+        ll sum = 0;
+        for (int i = u; i > 0; i -= i & (-i))
+            for (int j = v; j > 0; j -= j & (-j)) sum += s[i][j];
+        return sum;
+    }
+
+    ll get(ll x01, ll y01, ll x02, ll y02) {
+        return get(x02, y02) - get(x01 - 1, y02) - get(x02, y01 - 1) + get(x01 - 1, y01 - 1);   
+    }
+};
