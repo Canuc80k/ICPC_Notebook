@@ -1,0 +1,46 @@
+struct FenwickTree2D {
+    vector<vector<ll>> s, pos; ll n;
+    FenwickTree2D(ll n): n(n), s(n + 10), pos(n + 10) {}
+
+    void fakeUpdate(ll u, ll v) {
+        for (int i = u; i <= n; i += i & (-i)) pos[i].push_back(v);
+    }
+
+    void compress() {
+        for (int i = 1; i <= n; i ++) {
+            pos[i].push_back(0);
+            sort(pos[i].begin(), pos[i].end());
+            pos[i].erase(unique(pos[i].begin(), pos[i].end()), pos[i].end());
+            s[i].assign(pos[i].size(), 0);
+        }
+    }
+
+    void update(ll u, ll v, ll x) {
+        for (int i = u; i <= n; i += i & (-i))
+            for (int j = lower_bound(pos[i].begin(), pos[i].end(), v) - pos[i].begin(); j < s[i].size(); j += j & (-j))
+                s[i][j] += x; 
+    }
+
+    ll get(ll u, ll v) {
+        ll sum = 0;
+        for (int i = u; i > 0; i -= i & (-i))
+            for (int j = lower_bound(pos[i].begin(), pos[i].end(), v) - pos[i].begin(); j > 0; j -= j & (-j))
+                sum += s[i][j];
+        return sum;
+    }
+
+    ll get(ll x01, ll y01, ll x02, ll y02) {
+        return get(x02, y02) - get(x01 - 1, y02) - get(x02, y01 - 1) + get(x01 - 1, y01 - 1);   
+    }
+
+    void fakeGet(ll u, ll v) {
+        for (u; u > 0; u -= u & (-u)) pos[u].push_back(v);
+    }
+
+    void fakeGet(ll x01, ll y01, ll x02, ll y02) {
+        fakeGet(x02, y02);
+        fakeGet(x01 - 1, y02);
+        fakeGet(x02, y01 - 1);
+        fakeGet(x01 - 1, y01 - 1);   
+    }
+};
