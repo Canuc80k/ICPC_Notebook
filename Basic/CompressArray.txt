@@ -1,0 +1,11 @@
+auto compress = [&](ll *a, ll *b, ll n) -> void {
+    pair<ll, ll> tmp[n + 1]; tmp[0].first = 0;
+    for (int i = 1; i <= n; i ++) 
+        tmp[i].first = a[i], tmp[i].second = i;
+    sort(tmp + 1, tmp + n + 1);
+    ll curr_number = 0;
+    for (int i = 1; i <= n; i ++)
+        if (tmp[i].first == tmp[i - 1].first) 
+            b[tmp[i].second] = curr_number;
+        else b[tmp[i].second] = ++ curr_number; 
+};

@@ -1,0 +1,18 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const ll N = 1e6 + 1;
+const ll M = 1e9 + 7;
+
+void doTest(ll testID) {
+    
+}
+
+signed main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+
+    int test = 1; 
+    cin >> test;
+    for (int _ = 1; _ <= test; _ ++) doTest(test);
+}
