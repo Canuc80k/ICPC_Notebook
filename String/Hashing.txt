@@ -1,0 +1,38 @@
+const ll MS = 2, BASE = 331;
+const ll MOD[] = {(ll)1e9 + 2277, (ll)1e9 + 5277, (ll)1e9 + 8277, (ll)1e9 + 9277};
+ll p[N][MS];
+void hashPrecompute() {
+    for (int i = 0; i < MS; i ++) {
+        p[0][i] = 1;
+        for (int j = 1; j < N; j ++)
+            p[j][i] = (p[j - 1][i] * BASE) % MOD[i];
+    }
+}
+struct Hash {
+    vector<array<ll, MS>> h;
+    Hash() {}
+    Hash(string s) : h(s.size()) {
+        if (s.size() == 0) return;
+        for (int i = 0; i < MS; i ++) {
+            h[0][i] = s[0];
+            for (int j = 1; j < s.size(); j ++)
+                h[j][i] = (h[j - 1][i] * BASE + s[j]) % MOD[i];
+        }
+    }
+    void operator += (char c) {
+        array<ll, MS> res;
+        for (int i = 0; i < MS; i ++) {
+            if (h.size() == 0) {res[i] = c % MOD[i]; continue;}
+            res[i] = (h[h.size() - 1][i] * BASE + c) % MOD[i];
+        }
+        h.push_back(res);
+    }
+    array<ll, MS> get(ll l, ll r) {
+        array<ll, MS> res;
+        for (int i = 0; i < MS; i ++) {
+            if (l == 0) {res[i] = h[r][i]; continue;}
+            res[i] = (h[r][i] - h[l - 1][i] * p[r - l + 1][i] + MOD[i] * MOD[i]) % MOD[i];
+        }
+        return res;
+    }
+};

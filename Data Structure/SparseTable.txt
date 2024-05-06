@@ -1,0 +1,14 @@
+struct SparseTable {
+    vector<vector<ll>> s;
+    ll merge(ll a, ll b) {return min(a, b);}
+    SparseTable(ll *a, ll n): s(n + 1, vector<ll>(__lg(n + 1) + 1)) {
+        for (int i = 1; i <= n; i ++) s[i][0] = a[i];
+        for (int j = 1; j <= __lg(n); j ++)
+            for (ll i = 1; i + (1 << j) - 1 <= n; i ++)
+                s[i][j] = merge(s[i][j - 1], s[i + (1 << (j - 1))][j - 1]);
+    }
+    ll get(ll l, ll r) {
+        ll k = __lg(r - l + 1);
+        return merge(s[l][k], s[r - (1 << k) + 1][k]);    
+    }
+};

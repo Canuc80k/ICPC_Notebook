@@ -1,23 +1,25 @@
-template<class T, ll N> struct Matrix {
-    array<array<T, N>, N> s{};
-    Matrix operator*(Matrix& m) {
-        Matrix a;
-        for (int i = 0; i < N; i ++)
-            for (int j = 0; j < N; j ++)
-                for (int k = 0; k < N; k ++)
-                    a.s[i][j] += s[i][k] * m.s[k][j], a.s[i][j] %= M;
+struct Matrix {
+    vector<vector<ll>> s; ll n, m;
+    Matrix(ll n, ll m): s(n, vector<ll>(m, 0)), n(n), m(m) {}
+
+    Matrix operator*(Matrix& b) {
+        Matrix a(n, b.m);
+        for (int i = 0; i < n; i ++)
+            for (int j = 0; j < b.m; j ++)
+                for (int k = 0; k < m; k ++)
+                    a.s[i][j] += s[i][k] * b.s[k][j], a.s[i][j] %= M;
         return a;
     }
-    friend vector<T> operator *(vector<T> v, Matrix<T, N> m) {
-        vector<T> res(N);
-        for (int i = 0; i < N; i ++)
-            for (int j = 0; j < N; j ++)
-                res[i] += v[j] * m.s[j][i], res[i] %= M;
+    friend vector<ll> operator *(vector<ll> v, Matrix b) {
+        vector<ll> res(b.m);
+        for (int i = 0; i < b.m; i ++)
+            for (int j = 0; j < b.n; j ++)
+                res[i] += v[j] * b.s[j][i], res[i] %= M;
         return res;
     }
     Matrix operator^(ll p) {
-        Matrix a, b(*this);
-        for (int i = 0; i < N; i ++) a.s[i][i] = 1;
+        Matrix a(n, n), b(*this);
+        for (int i = 0; i < n; i ++) a.s[i][i] = 1;
         while (p) {
             if (p & 1) a = a * b;
             b = b * b;
